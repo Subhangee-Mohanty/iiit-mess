@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: iiit-mess-b423065
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_ROLL
+        value: ADMIN
+      - key: ADMIN_PASSWORD
+        value: Admin@123
+      - key: SEED_DEMO
+        value: "true"

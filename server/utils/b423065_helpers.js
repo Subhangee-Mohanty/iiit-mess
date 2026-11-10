@@ -11,14 +11,21 @@ export const text = value => (typeof value === 'string' ? value.trim() : '')
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 
-export async function uniqueCode() {
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    let code = 'MT-'
-    for (let i = 0; i < 6; i += 1) code += ALPHABET[crypto.randomInt(ALPHABET.length)]
-    const taken = await Token.exists({ code })
-    if (!taken) return code
+const randomCode = () => {
+  let code = 'MT-'
+  for (let i = 0; i < 6; i += 1) code += ALPHABET[crypto.randomInt(ALPHABET.length)]
+  return code
+}
+
+export async function uniqueCodes(count) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const pool = new Set()
+    while (pool.size < count) pool.add(randomCode())
+    const list = [...pool]
+    const taken = await Token.find({ code: { $in: list } }).select('code').lean()
+    if (!taken.length) return list
   }
-  throw new Error('Could not generate a token code')
+  throw new Error('Could not generate token codes')
 }
 
 export async function computeDues(userId, entryLimit = 0) {

@@ -4,7 +4,7 @@ import MenuItem from '../models/b423065_MenuItem.js'
 import Token from '../models/b423065_Token.js'
 import Due from '../models/b423065_Due.js'
 import { requireAuth } from '../middleware/b423065_auth.js'
-import { asyncHandler, computeDues, uniqueCode } from '../utils/b423065_helpers.js'
+import { asyncHandler, computeDues, uniqueCodes } from '../utils/b423065_helpers.js'
 import { MEALS, beforeCutoff, bookingStatus, dayIndexOf, isValidDateKey } from '../utils/b423065_dates.js'
 
 const router = Router()
@@ -78,36 +78,46 @@ router.post(
       return res.status(400).json({ message: 'Some meals in your cart can no longer be booked', issues })
     }
 
-    const created = []
-    for (const item of valid) {
+    const codes = await uniqueCodes(valid.length)
+    const toInsert = []
+    const toRevive = []
+    valid.forEach((item, index) => {
       const payload = {
         dayIndex: dayIndexOf(item.dateKey),
         items: item.entry.items,
         price: item.entry.price,
-        code: await uniqueCode(),
+        code: codes[index],
         status: 'booked',
         usedAt: null
       }
       const previous = existingMap.get(`${item.dateKey}|${item.mealType}`)
       if (previous) {
         Object.assign(previous, payload)
-        created.push(await previous.save())
+        toRevive.push(previous)
       } else {
-        created.push(
-          await Token.create({ user: req.user._id, dateKey: item.dateKey, mealType: item.mealType, ...payload })
-        )
+        toInsert.push({ user: req.user._id, dateKey: item.dateKey, mealType: item.mealType, ...payload })
       }
-    }
+    })
 
-    await Due.insertMany(
-      created.map(token => ({
-        user: req.user._id,
-        type: 'charge',
-        amount: token.price,
-        description: `${MEALS[token.mealType].label} token for ${token.dateKey}`,
-        token: token._id
-      }))
-    )
+    const inserted = toInsert.length ? await Token.insertMany(toInsert) : []
+    const created = [...inserted]
+    try {
+      await Promise.all(toRevive.map(token => token.save()))
+      created.push(...toRevive)
+      await Due.insertMany(
+        created.map(token => ({
+          user: req.user._id,
+          type: 'charge',
+          amount: token.price,
+          description: `${MEALS[token.mealType].label} token for ${token.dateKey}`,
+          token: token._id
+        }))
+      )
+    } catch (err) {
+      await Token.deleteMany({ _id: { $in: inserted.map(token => token._id) } })
+      await Token.updateMany({ _id: { $in: toRevive.map(token => token._id) } }, { status: 'cancelled' })
+      throw err
+    }
 
     const totalCharged = created.reduce((sum, token) => sum + token.price, 0)
     return res.status(201).json({ tokens: created, totalCharged, dues: await computeDues(req.user._id) })

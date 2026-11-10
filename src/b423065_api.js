@@ -23,17 +23,26 @@ async function request(method, url, body) {
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 60000)
   let response
   try {
     response = await fetch(`/api${url}`, {
       method,
       headers,
+      signal: controller.signal,
       body: body !== undefined ? JSON.stringify(body) : undefined
     })
-  } catch {
-    const error = new Error('Cannot reach the server. Please check your connection.')
+  } catch (failure) {
+    const error = new Error(
+      failure && failure.name === 'AbortError'
+        ? 'The server is taking too long. Please check your tokens page and try again.'
+        : 'Cannot reach the server. Please check your connection.'
+    )
     error.status = 0
     throw error
+  } finally {
+    clearTimeout(timer)
   }
 
   let data = null

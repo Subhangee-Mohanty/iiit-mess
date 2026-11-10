@@ -557,11 +557,16 @@ code {
 
 .modal-backdrop {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 100;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 18px;
+  overflow-y: auto;
   background: rgba(10, 14, 36, 0.55);
   backdrop-filter: blur(6px);
   animation: fadeIn 0.2s ease both;
@@ -570,7 +575,9 @@ code {
 .modal {
   width: 100%;
   max-width: 480px;
-  max-height: 90vh;
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - 36px);
+  margin: auto;
   display: flex;
   flex-direction: column;
   background: var(--surface);

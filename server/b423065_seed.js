@@ -6,39 +6,39 @@ import Notice from './models/b423065_Notice.js'
 
 const WEEKLY_MENU = [
   {
-    breakfast: { items: ['Idli', 'Sambar', 'Coconut Chutney', 'Tea'], price: 35 },
-    lunch: { items: ['Steamed Rice', 'Dal Tadka', 'Aloo Gobi', 'Chapati', 'Salad'], price: 65 },
-    dinner: { items: ['Jeera Rice', 'Rajma Masala', 'Mixed Veg', 'Chapati', 'Gulab Jamun'], price: 75 }
+    breakfast: { items: ['Idli', 'Sambar', 'Coconut Chutney', 'Tea'], price: 30 },
+    lunch: { items: ['Steamed Rice', 'Dal Tadka', 'Aloo Gobi', 'Chapati', 'Salad'], price: 60 },
+    dinner: { items: ['Jeera Rice', 'Rajma Masala', 'Mixed Veg', 'Chapati', 'Gulab Jamun'], price: 55 }
   },
   {
-    breakfast: { items: ['Poha', 'Sev', 'Boiled Egg or Banana', 'Tea'], price: 40 },
-    lunch: { items: ['Steamed Rice', 'Sambar', 'Cabbage Poriyal', 'Papad', 'Curd'], price: 65 },
-    dinner: { items: ['Veg Pulao', 'Paneer Butter Masala', 'Raita', 'Chapati'], price: 85 }
+    breakfast: { items: ['Poha', 'Sev', 'Boiled Egg or Banana', 'Tea'], price: 30 },
+    lunch: { items: ['Steamed Rice', 'Sambar', 'Cabbage Poriyal', 'Papad', 'Curd'], price: 60 },
+    dinner: { items: ['Veg Pulao', 'Paneer Butter Masala', 'Raita', 'Chapati'], price: 55 }
   },
   {
-    breakfast: { items: ['Aloo Paratha', 'Curd', 'Pickle', 'Tea'], price: 40 },
-    lunch: { items: ['Steamed Rice', 'Dalma', 'Baigan Bhaja', 'Chapati', 'Salad'], price: 65 },
-    dinner: { items: ['Steamed Rice', 'Egg Curry or Soya Chaap', 'Dal Fry', 'Chapati'], price: 80 }
+    breakfast: { items: ['Aloo Paratha', 'Curd', 'Pickle', 'Tea'], price: 30 },
+    lunch: { items: ['Steamed Rice', 'Dalma', 'Baigan Bhaja', 'Chapati', 'Salad'], price: 60 },
+    dinner: { items: ['Steamed Rice', 'Egg Curry or Soya Chaap', 'Dal Fry', 'Chapati'], price: 55 }
   },
   {
-    breakfast: { items: ['Upma', 'Coconut Chutney', 'Banana', 'Tea'], price: 35 },
-    lunch: { items: ['Chole', 'Bhature', 'Onion Salad', 'Lassi'], price: 75 },
-    dinner: { items: ['Veg Fried Rice', 'Veg Manchurian', 'Hot and Sour Soup'], price: 80 }
+    breakfast: { items: ['Upma', 'Coconut Chutney', 'Banana', 'Tea'], price: 30 },
+    lunch: { items: ['Chole', 'Bhature', 'Onion Salad', 'Lassi'], price: 60 },
+    dinner: { items: ['Veg Fried Rice', 'Veg Manchurian', 'Hot and Sour Soup'], price: 55 }
   },
   {
-    breakfast: { items: ['Puri', 'Aloo Bhaji', 'Tea'], price: 40 },
-    lunch: { items: ['Steamed Rice', 'Dal Fry', 'Bhindi Fry', 'Chapati', 'Curd'], price: 65 },
-    dinner: { items: ['Steamed Rice', 'Chicken Curry or Paneer Masala', 'Dal Fry', 'Chapati', 'Sweet'], price: 90 }
+    breakfast: { items: ['Puri', 'Aloo Bhaji', 'Tea'], price: 30 },
+    lunch: { items: ['Steamed Rice', 'Dal Fry', 'Bhindi Fry', 'Chapati', 'Curd'], price: 60 },
+    dinner: { items: ['Steamed Rice', 'Chicken Curry or Paneer Masala', 'Dal Fry', 'Chapati', 'Sweet'], price: 55 }
   },
   {
-    breakfast: { items: ['Masala Dosa', 'Sambar', 'Chutney', 'Tea'], price: 45 },
-    lunch: { items: ['Veg Biryani', 'Raita', 'Salad', 'Papad'], price: 80 },
-    dinner: { items: ['Steamed Rice', 'Dal Makhani', 'Mixed Veg', 'Chapati', 'Ice Cream'], price: 80 }
+    breakfast: { items: ['Masala Dosa', 'Sambar', 'Chutney', 'Tea'], price: 30 },
+    lunch: { items: ['Veg Biryani', 'Raita', 'Salad', 'Papad'], price: 60 },
+    dinner: { items: ['Steamed Rice', 'Dal Makhani', 'Mixed Veg', 'Chapati', 'Ice Cream'], price: 55 }
   },
   {
-    breakfast: { items: ['Chakuli Pitha', 'Ghugni', 'Tea'], price: 45 },
-    lunch: { items: ['Pakhala Bhata', 'Badi Chura', 'Saga Bhaja', 'Fried Fish or Paneer'], price: 75 },
-    dinner: { items: ['Special Thali', 'Dalma', 'Paneer Curry', 'Chapati', 'Kheer'], price: 95 }
+    breakfast: { items: ['Chakuli Pitha', 'Ghugni', 'Tea'], price: 30 },
+    lunch: { items: ['Pakhala Bhata', 'Badi Chura', 'Saga Bhaja', 'Fried Fish or Paneer'], price: 60 },
+    dinner: { items: ['Special Thali', 'Dalma', 'Paneer Curry', 'Chapati', 'Kheer'], price: 55 }
   }
 ]
 
@@ -54,6 +54,10 @@ export async function seedDatabase() {
     await MenuItem.insertMany(entries)
     console.log('Weekly menu seeded')
   }
+
+  await MenuItem.updateMany({ mealType: 'breakfast' }, { $set: { price: 30 } })
+  await MenuItem.updateMany({ mealType: 'lunch' }, { $set: { price: 60 } })
+  await MenuItem.updateMany({ mealType: 'dinner' }, { $set: { price: 55 } })
 
   const admin = await User.findOne({ rollNo: config.adminRoll })
   if (!admin) {

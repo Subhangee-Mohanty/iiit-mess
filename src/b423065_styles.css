@@ -599,6 +599,12 @@ code {
 .modal-body {
   padding: 20px 22px;
   overflow-y: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.modal-foot {
+  flex-shrink: 0;
 }
 
 .modal-foot {

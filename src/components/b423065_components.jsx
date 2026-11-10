@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 export function Logo() {
   return (
@@ -50,7 +51,7 @@ export function Modal({ title, onClose, children, footer, wide = false }) {
     }
   }, [onClose])
 
-  return (
+  return createPortal(
     <div
       className="modal-backdrop"
       onMouseDown={event => {
@@ -67,7 +68,8 @@ export function Modal({ title, onClose, children, footer, wide = false }) {
         <div className="modal-body">{children}</div>
         {footer && <div className="modal-foot">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 

@@ -557,15 +557,15 @@ code {
 
 .modal-backdrop {
   position: fixed;
-  top: 0;
+  top: var(--nav-h, 72px);
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 100;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 16px 20px 20px;
   overflow-y: auto;
   background: rgba(10, 14, 36, 0.55);
   backdrop-filter: blur(6px);
@@ -575,9 +575,9 @@ code {
 .modal {
   width: 100%;
   max-width: 480px;
-  max-height: calc(100vh - 36px);
-  max-height: calc(100dvh - 36px);
-  margin: auto;
+  max-height: calc(100vh - var(--nav-h, 72px) - 36px);
+  max-height: calc(100dvh - var(--nav-h, 72px) - 36px);
+  margin: 0;
   display: flex;
   flex-direction: column;
   background: var(--surface);
@@ -600,11 +600,12 @@ code {
 }
 
 .modal-head h3 {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
 }
 
 .modal-body {
-  padding: 20px 22px;
+  padding: 24px 26px;
+  font-size: 1.05rem;
   overflow-y: auto;
   min-height: 0;
   flex: 1 1 auto;
